@@ -11,7 +11,7 @@ class FirestoreWrapper {
     return;
   }
 
-  Future<Map<String, dynamic>>? getUserInfo({required String uid}) async {
+  Future<Map<String, dynamic>> getUserInfo({required String uid}) async {
     final userData =
         await _firebaseFirestore.collection('users').doc(uid).get();
     return userData.data()!;

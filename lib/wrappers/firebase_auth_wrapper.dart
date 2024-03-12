@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseAuthWrapper {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  User get currentUser => _firebaseAuth.currentUser!;
+  User? get currentUser => _firebaseAuth.currentUser;
 
   Future<User?> signupWithEmailAndPassword({
     required String email,
