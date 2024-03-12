@@ -22,15 +22,18 @@ class FirebaseAuthWrapper {
     }
   }
 
-  Future<void> signinWithEmailAndPassword({
+  Future<User?> signinWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      final response = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+
+      return response.user;
     } on FirebaseAuthException catch (error) {
       log(error.toString());
+      return null;
     }
   }
 }

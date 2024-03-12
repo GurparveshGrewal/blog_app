@@ -1,5 +1,6 @@
 import 'package:blog_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:blog_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:blog_app/features/auth/domain/usecases/signin_with_email_password.dart';
 import 'package:blog_app/features/auth/domain/usecases/signup_with_email_password.dart';
 import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/wrappers/firebase_auth_wrapper.dart';
@@ -25,8 +26,12 @@ void _initAuth() {
   // Usecases
   serviceLocator.registerFactory(
       () => SignupWithEmailAndPasswordUsecase(serviceLocator()));
+  serviceLocator.registerFactory(
+      () => SigninWithEmailAndPasswordUsecase(serviceLocator()));
 
   // Blocs
-  serviceLocator
-      .registerLazySingleton(() => AuthBloc(signUpUsecase: serviceLocator()));
+  serviceLocator.registerLazySingleton(() => AuthBloc(
+        signUpUsecase: serviceLocator(),
+        signInUsecase: serviceLocator(),
+      ));
 }
