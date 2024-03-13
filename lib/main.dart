@@ -2,6 +2,7 @@ import 'package:blog_app/core/app_theme/app_theme.dart';
 import 'package:blog_app/core/commons/cubit/app_user/app_user_cubit.dart';
 import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/features/auth/presentation/pages/signup_page.dart';
+import 'package:blog_app/features/blog/presentation/pages/blog_page.dart';
 import 'package:blog_app/firebase_options.dart';
 import 'package:blog_app/init_dependencies.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -52,11 +53,7 @@ class _MyAppState extends State<MyApp> {
           },
           builder: (context, isUserLoggedIn) {
             if (isUserLoggedIn) {
-              return const Scaffold(
-                body: Center(
-                  child: Text("Logged In!!"),
-                ),
-              );
+              return const BlogPage();
             }
             return const SignUpPage();
           },
