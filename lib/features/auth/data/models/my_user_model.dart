@@ -1,4 +1,4 @@
-import 'package:blog_app/features/auth/domain/entities/my_user.dart';
+import 'package:blog_app/core/commons/entities/my_user.dart';
 
 class MyUserModel extends MyUser {
   MyUserModel({

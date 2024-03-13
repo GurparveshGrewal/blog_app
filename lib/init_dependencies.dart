@@ -1,5 +1,9 @@
+import 'package:blog_app/core/commons/cubit/app_user/app_user_cubit.dart';
 import 'package:blog_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:blog_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:blog_app/features/auth/domain/usecases/get_curret_user.dart';
+import 'package:blog_app/features/auth/domain/usecases/get_user_data.dart';
+import 'package:blog_app/features/auth/domain/usecases/signin_with_email_password.dart';
 import 'package:blog_app/features/auth/domain/usecases/signup_with_email_password.dart';
 import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/wrappers/firebase_auth_wrapper.dart';
@@ -14,6 +18,9 @@ Future<void> initDependencies() async {
   // registering firebase wrapper
   serviceLocator.registerLazySingleton(() => FirebaseAuthWrapper());
   serviceLocator.registerLazySingleton(() => FirestoreWrapper());
+
+  // core
+  serviceLocator.registerLazySingleton(() => AppUserCubit());
 }
 
 void _initAuth() {
@@ -25,8 +32,17 @@ void _initAuth() {
   // Usecases
   serviceLocator.registerFactory(
       () => SignupWithEmailAndPasswordUsecase(serviceLocator()));
+  serviceLocator.registerFactory(
+      () => SigninWithEmailAndPasswordUsecase(serviceLocator()));
+  serviceLocator.registerFactory(() => GetUserDataUsecase(serviceLocator()));
+  serviceLocator.registerFactory(() => GetCurrentUserUsecase(serviceLocator()));
 
   // Blocs
-  serviceLocator
-      .registerLazySingleton(() => AuthBloc(signUpUsecase: serviceLocator()));
+  serviceLocator.registerLazySingleton(() => AuthBloc(
+        appUserCubit: serviceLocator(),
+        signUpUsecase: serviceLocator(),
+        signInUsecase: serviceLocator(),
+        getUserData: serviceLocator(),
+        getCurrentUser: serviceLocator(),
+      ));
 }

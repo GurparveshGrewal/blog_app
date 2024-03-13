@@ -15,14 +15,41 @@ class AuthRepositoryImpl extends AuthRepository {
   );
 
   @override
-  Future<MyUserModel> signinWithEmailAndPassword(
-      {required String email, required String password}) {
-    // TODO: implement signinWithEmailAndPassword
-    throw UnimplementedError();
+  Future<MyUserModel> getCurrentUser() async {
+    try {
+      final currentUser = _firebaseAuthWrapper.currentUser;
+
+      if (currentUser != null) {
+        final user = await getUserData(uid: currentUser.uid);
+        return user;
+      }
+
+      return MyUserModel.empty;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
 
   @override
-  Future<MyUserModel> signupWithEmailAndPassword(
+  Future<String> signinWithEmailAndPassword(
+      {required String email, required String password}) async {
+    try {
+      final user = await _firebaseAuthWrapper.signinWithEmailAndPassword(
+          email: email, password: password);
+
+      if (user != null) {
+        return user.uid;
+      }
+      return '';
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> signupWithEmailAndPassword(
       {required String userName,
       required String email,
       required String password}) async {
@@ -32,19 +59,33 @@ class AuthRepositoryImpl extends AuthRepository {
 
       if (user != null) {
         await _firestoreWrapper.storeDataToFirestore(uid: user.uid, data: {
-          'username': userName,
           'email': email,
-          'createdAt': DateTime.now().toIso8601String(),
+          'username': userName,
+          'createdAt': DateTime.now().toIso8601String()
         });
+
+        return user.uid;
       }
 
+      return '';
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<MyUserModel> getUserData({required String uid}) async {
+    try {
+      final rawUser = await _firestoreWrapper.getUserInfo(uid: uid);
+
       return MyUserModel(
-        uid: user!.uid,
-        email: user.email!,
-        name: 'name',
+        uid: uid,
+        name: rawUser['username'],
+        email: rawUser['email'],
       );
-    } catch (error) {
-      log(error.toString());
+    } catch (e) {
+      log(e.toString());
       return MyUserModel.empty;
     }
   }

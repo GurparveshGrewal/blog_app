@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseAuthWrapper {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  User get currentUser => _firebaseAuth.currentUser!;
+  User? get currentUser => _firebaseAuth.currentUser;
 
   Future<User?> signupWithEmailAndPassword({
     required String email,
@@ -22,15 +22,18 @@ class FirebaseAuthWrapper {
     }
   }
 
-  Future<void> signinWithEmailAndPassword({
+  Future<User?> signinWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      final response = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+
+      return response.user;
     } on FirebaseAuthException catch (error) {
       log(error.toString());
+      return null;
     }
   }
 }

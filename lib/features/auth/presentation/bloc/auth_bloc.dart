@@ -1,38 +1,89 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:blog_app/core/commons/cubit/app_user/app_user_cubit.dart';
+import 'package:blog_app/core/commons/entities/my_user.dart';
+import 'package:blog_app/features/auth/domain/usecases/get_curret_user.dart';
+import 'package:blog_app/features/auth/domain/usecases/get_user_data.dart';
+import 'package:blog_app/features/auth/domain/usecases/signin_with_email_password.dart';
 import "package:meta/meta.dart";
-import 'package:blog_app/features/auth/data/models/my_user_model.dart';
 import 'package:blog_app/features/auth/domain/usecases/signup_with_email_password.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  final AppUserCubit _appUserCubit;
+  final GetCurrentUserUsecase _getCurrentUserUsecase;
   final SignupWithEmailAndPasswordUsecase _signupWithEmailAndPasswordUsecase;
+  final SigninWithEmailAndPasswordUsecase _signinWithEmailAndPasswordUsecase;
+  final GetUserDataUsecase _getUserDataUsecase;
   AuthBloc({
+    required AppUserCubit appUserCubit,
+    required GetCurrentUserUsecase getCurrentUser,
     required SignupWithEmailAndPasswordUsecase signUpUsecase,
-  })  : _signupWithEmailAndPasswordUsecase = signUpUsecase,
+    required SigninWithEmailAndPasswordUsecase signInUsecase,
+    required GetUserDataUsecase getUserData,
+  })  : _appUserCubit = appUserCubit,
+        _getCurrentUserUsecase = getCurrentUser,
+        _signupWithEmailAndPasswordUsecase = signUpUsecase,
+        _signinWithEmailAndPasswordUsecase = signInUsecase,
+        _getUserDataUsecase = getUserData,
         super(AuthInitialState()) {
+    on<AuthEvent>((_, emit) => emit(AuthLoadingState()));
+    on<AuthIsUserLoggedIn>(authIsUserLoggedIn);
     on<AuthSignUpProcessEvent>(authSignUpProcessEvent);
+    on<AuthSignInProcessEvent>(authSignInProcessEvent);
+  }
+
+  FutureOr<void> authIsUserLoggedIn(
+      AuthIsUserLoggedIn event, Emitter<AuthState> emit) async {
+    final user = await _getCurrentUserUsecase({});
+
+    if (user.uid != '') {
+      print(user.uid);
+      _emitAuthSuccess(user, emit);
+    } else {
+      emit(AuthFailureState());
+    }
   }
 
   FutureOr<void> authSignUpProcessEvent(
       AuthSignUpProcessEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoadingState());
-    final res = await _signupWithEmailAndPasswordUsecase(
+    final uid = await _signupWithEmailAndPasswordUsecase(
         SignupWithEmailAndPasswordUsecaseParams(
       name: event.name,
       email: event.email,
       password: event.password,
     ));
 
-    if (res != MyUserModel.empty) {
-      emit(AuthSuccessState(
-        uid: res.uid,
-      ));
+    if (uid != '') {
+      final myUser = await _getUserDataUsecase(GetUserDataParams(id: uid));
+      _emitAuthSuccess(myUser, emit);
     } else {
       emit(AuthFailureState());
     }
+  }
+
+  FutureOr<void> authSignInProcessEvent(
+      AuthSignInProcessEvent event, Emitter<AuthState> emit) async {
+    final uid = await _signinWithEmailAndPasswordUsecase(
+        SigninWithEmailAndPasswordUsecaseParams(
+      email: event.email,
+      password: event.password,
+    ));
+
+    if (uid != '') {
+      final myUser = await _getUserDataUsecase(GetUserDataParams(id: uid));
+      print(myUser);
+      _emitAuthSuccess(myUser, emit);
+    } else {
+      emit(AuthFailureState());
+    }
+  }
+
+  void _emitAuthSuccess(MyUser currentUser, Emitter<AuthState> emit) {
+    _appUserCubit.updateUser(currentUser);
+    emit(AuthSuccessState(uid: currentUser.uid));
   }
 }
