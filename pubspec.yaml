@@ -23,6 +23,7 @@ dependencies:
   meta: ^1.11.0
   dotted_border: ^2.1.0
   image_picker: ^1.0.7
+  firebase_storage: ^11.6.10
 
 dev_dependencies:
   flutter_test:

@@ -4,10 +4,7 @@ import 'package:blog_app/core/app_theme/app_colors.dart';
 import 'package:blog_app/core/utils/image_picker.dart';
 import 'package:blog_app/features/blog/presentation/widgets/blog_text_field_widget.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:image_picker/image_picker.dart';
 
 class AddNewBlogPage extends StatefulWidget {
   const AddNewBlogPage({super.key});
@@ -17,7 +14,6 @@ class AddNewBlogPage extends StatefulWidget {
 }
 
 class _AddNewBlogPageState extends State<AddNewBlogPage> {
-  final ImagePicker _imagePicker = ImagePicker();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final List<String> _blogTypes = [
@@ -30,7 +26,6 @@ class _AddNewBlogPageState extends State<AddNewBlogPage> {
   File? _selectedImage;
 
   void _pickImage() async {
-    print("in picker");
     final pickedImage = await pickImage();
 
     if (pickedImage != null) {
