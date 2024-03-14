@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:blog_app/features/auth/data/models/my_user_model.dart';
 import 'package:blog_app/features/auth/domain/repositories/auth_repository.dart';
-import 'package:blog_app/wrappers/firebase_auth_wrapper.dart';
-import 'package:blog_app/wrappers/firestore_wrapper.dart';
+import 'package:blog_app/core/wrappers/firebase_auth_wrapper.dart';
+import 'package:blog_app/core/wrappers/firestore_wrapper.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
   final FirebaseAuthWrapper _firebaseAuthWrapper;
