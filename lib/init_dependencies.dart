@@ -1,4 +1,5 @@
 import 'package:blog_app/core/commons/cubit/app_user/app_user_cubit.dart';
+import 'package:blog_app/core/network/connection_checker.dart';
 import 'package:blog_app/core/wrappers/firebase_storage_wrapper.dart';
 import 'package:blog_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:blog_app/features/auth/domain/repositories/auth_repository.dart';
@@ -16,6 +17,7 @@ import 'package:blog_app/features/blog/domain/usecases/upload_blog_image_usecase
 import 'package:blog_app/features/blog/domain/usecases/upload_blog_usecase.dart';
 import 'package:blog_app/features/blog/presentation/bloc/blog_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 final serviceLocator = GetIt.instance;
 
@@ -29,11 +31,15 @@ Future<void> initDependencies() async {
   serviceLocator.registerLazySingleton(() => FirebaseStorageWrapper());
 
   // core
+  serviceLocator.registerFactory(() => InternetConnection());
   serviceLocator.registerLazySingleton(() => AppUserCubit());
+  serviceLocator.registerFactory<ConnectionChecker>(
+      () => ConnectionCheckerImpl(serviceLocator()));
 }
 
 void _initAuth() {
   serviceLocator.registerFactory<AuthRepository>(() => AuthRepositoryImpl(
+        serviceLocator(),
         serviceLocator(),
         serviceLocator(),
       ));

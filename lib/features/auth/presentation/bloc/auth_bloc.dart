@@ -44,7 +44,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print(user.uid);
       _emitAuthSuccess(user, emit);
     } else {
-      emit(AuthFailureState());
+      emit(AuthFailureState(
+          'Something went wrong!\nMake sure you have internet access.'));
     }
   }
 
@@ -57,11 +58,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       password: event.password,
     ));
 
+    if (uid == 'no-internet') {
+      emit(AuthFailureState('No internet connection.'));
+    }
+
     if (uid != '') {
       final myUser = await _getUserDataUsecase(GetUserDataParams(id: uid));
       _emitAuthSuccess(myUser, emit);
     } else {
-      emit(AuthFailureState());
+      emit(AuthFailureState('Something went wrong.'));
     }
   }
 
@@ -73,12 +78,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       password: event.password,
     ));
 
+    if (uid == 'no-internet') {
+      emit(AuthFailureState('No internet connection.'));
+    }
+
     if (uid != '') {
       final myUser = await _getUserDataUsecase(GetUserDataParams(id: uid));
       print(myUser);
       _emitAuthSuccess(myUser, emit);
     } else {
-      emit(AuthFailureState());
+      emit(AuthFailureState('Something went wrong.'));
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:blog_app/core/commons/widgets/loading_screen.dart';
+import 'package:blog_app/core/utils/show_snackbar_message.dart';
 import 'package:blog_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/features/auth/presentation/pages/signin_page.dart';
 import 'package:blog_app/features/auth/presentation/widgets/auth_button.dart';
@@ -40,6 +41,10 @@ class _SignUpPagStateState extends State<SignUpPage> {
                   );
 
                 case AuthFailureState:
+                  final AuthFailureState failureState =
+                      state as AuthFailureState;
+                  WidgetsBinding.instance.addPostFrameCallback(
+                      (_) => showSnackBar(context, failureState.errorMessage));
                   return const Center(
                     child: Text("Something went worng"),
                   );

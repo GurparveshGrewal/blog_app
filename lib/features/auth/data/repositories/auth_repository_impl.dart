@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:blog_app/core/network/connection_checker.dart';
 import 'package:blog_app/features/auth/data/models/my_user_model.dart';
 import 'package:blog_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:blog_app/core/wrappers/firebase_auth_wrapper.dart';
@@ -8,15 +9,20 @@ import 'package:blog_app/core/wrappers/firestore_wrapper.dart';
 class AuthRepositoryImpl extends AuthRepository {
   final FirebaseAuthWrapper _firebaseAuthWrapper;
   final FirestoreWrapper _firestoreWrapper;
+  final ConnectionChecker _connectionChecker;
 
   AuthRepositoryImpl(
     this._firebaseAuthWrapper,
     this._firestoreWrapper,
+    this._connectionChecker,
   );
 
   @override
   Future<MyUserModel> getCurrentUser() async {
     try {
+      if (!await (_connectionChecker.isConnected)) {
+        return MyUserModel.empty;
+      }
       final currentUser = _firebaseAuthWrapper.currentUser;
 
       if (currentUser != null) {
@@ -35,6 +41,9 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<String> signinWithEmailAndPassword(
       {required String email, required String password}) async {
     try {
+      if (!await (_connectionChecker.isConnected)) {
+        return 'no-internet';
+      }
       final user = await _firebaseAuthWrapper.signinWithEmailAndPassword(
           email: email, password: password);
 
@@ -54,6 +63,9 @@ class AuthRepositoryImpl extends AuthRepository {
       required String email,
       required String password}) async {
     try {
+      if (!await (_connectionChecker.isConnected)) {
+        return 'no-internet';
+      }
       final user = await _firebaseAuthWrapper.signupWithEmailAndPassword(
           email: email, password: password);
 
