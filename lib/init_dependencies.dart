@@ -11,6 +11,7 @@ import 'package:blog_app/core/wrappers/firebase_auth_wrapper.dart';
 import 'package:blog_app/core/wrappers/firestore_wrapper.dart';
 import 'package:blog_app/features/blog/data/repository/blog_repository_impl.dart';
 import 'package:blog_app/features/blog/domain/repository/blog_repository.dart';
+import 'package:blog_app/features/blog/domain/usecases/fetch_all_blogs_usecase.dart';
 import 'package:blog_app/features/blog/domain/usecases/upload_blog_image_usecase.dart';
 import 'package:blog_app/features/blog/domain/usecases/upload_blog_usecase.dart';
 import 'package:blog_app/features/blog/presentation/bloc/blog_bloc.dart';
@@ -65,10 +66,12 @@ _initBlog() {
   serviceLocator.registerLazySingleton(() => BlogBloc(
         uploadBlogImageUsecase: serviceLocator(),
         uploadBlog: serviceLocator(),
+        fetchAllBlogsUsecase: serviceLocator(),
       ));
 
   // Usecases
   serviceLocator
       .registerFactory(() => UploadBlogImageUsecase(serviceLocator()));
   serviceLocator.registerFactory(() => UploadBlogUsecase(serviceLocator()));
+  serviceLocator.registerFactory(() => FetchAllBlogsUsecase(serviceLocator()));
 }

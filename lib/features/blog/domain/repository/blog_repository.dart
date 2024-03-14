@@ -11,4 +11,6 @@ abstract class BlogRepository {
   Future<void> uploadBlogToFirestore({
     required Blog blogData,
   });
+
+  Future<List<Blog>> fetchAllBlogsFromFirestore();
 }
