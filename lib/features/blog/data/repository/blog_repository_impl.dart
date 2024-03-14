@@ -44,4 +44,39 @@ class BlogRepositoryImpl extends BlogRepository {
       log(e.toString());
     }
   }
+
+  @override
+  Future<List<BlogModel>> fetchAllBlogsFromFirestore() async {
+    try {
+      final List<BlogModel> blogs = [];
+      final rawBlogsData = await _firestoreWrapper.fetchAllBlogs();
+
+      if (rawBlogsData.isNotEmpty) {
+        for (var blog in rawBlogsData) {
+          blogs.add(BlogModel(
+            id: blog['id'],
+            posterId: blog['poster_id'],
+            title: blog['title'],
+            content: blog['content'],
+            imageUrl: blog['image_url'],
+            topics: _getTopics(blog['topics']),
+            createdAt: DateTime.parse(blog['created_at']),
+          ));
+        }
+      }
+      return blogs;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  List<String> _getTopics(List rawTopics) {
+    final List<String> topics = [];
+    for (String topic in rawTopics) {
+      topics.add(topic);
+    }
+
+    return topics;
+  }
 }
