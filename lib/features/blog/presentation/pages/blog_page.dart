@@ -1,6 +1,8 @@
+import 'package:blog_app/core/app_theme/app_colors.dart';
 import 'package:blog_app/core/commons/widgets/loading_screen.dart';
 import 'package:blog_app/features/blog/presentation/bloc/blog_bloc.dart';
 import 'package:blog_app/features/blog/presentation/pages/add_new_blog_page.dart';
+import 'package:blog_app/features/blog/presentation/widgets/blog_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -46,7 +48,11 @@ class _BlogPageState extends State<BlogPage> {
             return ListView.builder(
                 itemCount: state.blogs.length,
                 itemBuilder: (context, index) {
-                  return Text(state.blogs[index].title);
+                  return BlogCard(
+                      blogData: state.blogs[index],
+                      cardColor: index % 2 == 0
+                          ? AppColors.gradient1
+                          : AppColors.gradient2);
                 });
           }
           return const Center(
