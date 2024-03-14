@@ -1,4 +1,3 @@
-import 'package:blog_app/features/auth/data/models/my_user_model.dart';
 import 'package:blog_app/core/commons/entities/my_user.dart';
 
 abstract class AuthRepository {
@@ -13,7 +12,7 @@ abstract class AuthRepository {
     required String password,
   });
 
-  Future<MyUserModel> getCurrentUser();
+  Future<MyUser> getCurrentUser();
 
   Future<MyUser> getUserData({
     required String uid,

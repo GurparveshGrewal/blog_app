@@ -16,4 +16,9 @@ class FirestoreWrapper {
         await _firebaseFirestore.collection('users').doc(uid).get();
     return userData.data()!;
   }
+
+  Future<void> uploadBlogToFirestore(
+      {required Map<String, dynamic> data}) async {
+    await _firebaseFirestore.collection('blogs').add(data);
+  }
 }

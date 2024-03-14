@@ -13,6 +13,12 @@ class BlogTextFieldWidget extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(hintText: hintText),
       maxLines: null,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return '$hintText is an invalid value';
+        }
+        return null;
+      },
     );
   }
 }
