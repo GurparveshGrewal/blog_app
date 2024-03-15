@@ -94,7 +94,6 @@ class _SignUpPagStateState extends State<SignUpPage> {
                       title: "Sign Up",
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          print("validated");
                           context.read<AuthBloc>().add(AuthSignUpProcessEvent(
                                 name: _nameController.text.trim(),
                                 email: _emailController.text.trim(),

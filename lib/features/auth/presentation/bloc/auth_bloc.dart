@@ -41,7 +41,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final user = await _getCurrentUserUsecase({});
 
     if (user.uid != '') {
-      print(user.uid);
       _emitAuthSuccess(user, emit);
     } else {
       emit(AuthFailureState(
@@ -84,7 +83,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     if (uid != '') {
       final myUser = await _getUserDataUsecase(GetUserDataParams(id: uid));
-      print(myUser);
       _emitAuthSuccess(myUser, emit);
     } else {
       emit(AuthFailureState('Something went wrong.'));

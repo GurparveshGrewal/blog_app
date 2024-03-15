@@ -2,7 +2,6 @@ import 'package:blog_app/core/utils/calculate_reading_time.dart';
 import 'package:blog_app/core/utils/convert_date_time.dart';
 import 'package:blog_app/features/blog/domain/entities/blog_entity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class BlogDetail extends StatelessWidget {
   static route(Blog blog) =>
