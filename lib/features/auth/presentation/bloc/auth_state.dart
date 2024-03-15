@@ -12,6 +12,9 @@ final class AuthSuccessState extends AuthState {
   });
 }
 
-final class AuthFailureState extends AuthState {}
+final class AuthFailureState extends AuthState {
+  final String errorMessage;
+  AuthFailureState(this.errorMessage);
+}
 
 final class AuthLoadingState extends AuthState {}
